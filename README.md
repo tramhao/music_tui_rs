@@ -157,7 +157,14 @@ Finally, you can run it with:
 You can copy it anywhere in your `$PATH`. The configuration file for the TUI is located in `~/.config/termusic/tui.toml`, and the configuration file for the server is located in `~/.config/termusic/server.toml` (or on macOS, `~/Library/Application Support/termusic/tui.toml`, `~/Library/Application Support/termusic/server.toml`, respectively). <!---The MacOS, i assume it has the same rules as linux, so its a good idea to check, as i lack and macOS machine.-->
 However, as this is a minimalistic program, you don't need to edit the configuration file and almost everything can be set from the app.
 
+## Usage
+To play a song, just added it to playlist by `l` key(means load, also the vim key for right direction). 
+To switch layout, use number keys. `1` and `2` are the layout for playing music, with a difference that the left panel is local file or database. `3` is the layout for podcasts.
+For more operations, please press `ctrl+h` for help. By the way, all key bindings can be changed from config editor, which is brought up by `shift+C`. 
+
 ## TODO
+- [ ] Allow termusic to apply tui theme colors externally (pywal support). 
+- [ ] Better support for album photo. 
 - [ ] Better interface to adjust timestamp of lyric.
 - [ ] Rating and sync support.
 - [x] Multiple root and easy switch.
