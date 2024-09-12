@@ -376,7 +376,7 @@ impl Default for KeysPlayer {
                 tuievents::KeyModifiers::SHIFT,
             )
             .into(),
-            volume_up: tuievents::Key::Char('+').into(),
+            volume_up: tuievents::Key::Char('=').into(),
             volume_down: tuievents::Key::Char('-').into(),
             seek_forward: tuievents::Key::Char('f').into(),
             seek_backward: tuievents::Key::Char('b').into(),
