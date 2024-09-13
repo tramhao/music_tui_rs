@@ -105,18 +105,18 @@ jobs:
           components: rustfmt, clippy
 
       - name: Install dependencies
-        run: choco install protoc
+        run: choco install protoc gstreamer gstreamer-devel mpv mpv.install
 
       - uses: Swatinem/rust-cache@v2
 
       - name: Run cargo check
-        run: cargo check
+        run: cargo check --all --features all-backends
 
       - name: Run cargo test
-        run: cargo test
+        run: cargo test --all --features all-backends
 
       - name: Run cargo fmt
-        run: cargo fmt --all -- --check
+        run: cargo fmt --all --features all-backends -- --check
 
       - name: Run cargo clippy
         run: cargo clippy -- -D warnings
