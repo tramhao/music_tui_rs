@@ -105,7 +105,7 @@ jobs:
           components: rustfmt, clippy
 
       - name: Install dependencies
-        run: choco install protoc gstreamer gstreamer-devel mpv mpv.install
+        run: choco install protoc gstreamer gstreamer-devel mpv pkgconfiglite 
 
       - uses: Swatinem/rust-cache@v2
 
