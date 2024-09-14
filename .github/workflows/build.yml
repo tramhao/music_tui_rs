@@ -111,9 +111,9 @@ jobs:
 
       - name: Setup GStreamer
         id:   setup_gstreamer
-        uses: blinemedical/setup-gstreamer@1.4
+        uses: blinemedical/setup-gstreamer@v1.4.0
         with:
-          # version: '1.19.90'
+          version: '1.24.7'
           arch: 'x86'
       - run: |
           echo $env:GSTREAMER_1_0_ROOT_MSVC_X86
