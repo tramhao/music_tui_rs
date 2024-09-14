@@ -105,7 +105,18 @@ jobs:
           components: rustfmt, clippy
 
       - name: Install dependencies
-        run: choco install protoc gstreamer gstreamer-devel mpv pkgconfiglite gtk-runtime 
+        run: choco install protoc mpv pkgconfiglite gtk-runtime 
+        # run: choco install protoc gstreamer gstreamer-devel mpv pkgconfiglite gtk-runtime 
+             # export PKG_CONFIG_PATH=
+
+      - name: Setup GStreamer
+        id:   setup_gstreamer
+        uses: blinemedical/setup-gstreamer@1.0
+        with:
+          # version: '1.19.90'
+          arch: 'x86'
+      - run: |
+          echo $env:GSTREAMER_1_0_ROOT_MSVC_X86
 
       - uses: Swatinem/rust-cache@v2
 
