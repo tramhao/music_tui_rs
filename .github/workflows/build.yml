@@ -111,7 +111,7 @@ jobs:
 
       - name: Setup GStreamer
         id:   setup_gstreamer
-        uses: blinemedical/setup-gstreamer@1.0
+        uses: blinemedical/setup-gstreamer@1.4
         with:
           # version: '1.19.90'
           arch: 'x86'
