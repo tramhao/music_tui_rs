@@ -121,13 +121,13 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Run cargo check
-        run: cargo check --all --features all-backends
+        run: cargo check --all --features gst
 
       - name: Run cargo test
-        run: cargo test --all --features all-backends
+        run: cargo test --all --features gst
 
       - name: Run cargo fmt
-        run: cargo fmt --all --features all-backends -- --check
+        run: cargo fmt --all --features  -- --check
 
       - name: Run cargo clippy
         run: cargo clippy -- -D warnings
