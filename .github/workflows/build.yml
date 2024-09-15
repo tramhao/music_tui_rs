@@ -108,9 +108,11 @@ jobs:
         # run: choco install protoc mpv pkgconfiglite gtk-runtime mpv.install 
         run: |  
           choco install protoc gstreamer-mingw gstreamer-mingw-devel mpvio pkgconfiglite gtk-runtime 
-          echo "D:\gstreamer\1.0\mingw_x86-64\lib\pkgconfig" >> "${env:PKG_CONFIG_PATH}"
-          echo  "${env:PKG_CONFIG_PATH}"
+          # echo "D:\gstreamer\1.0\mingw_x86-64\lib\pkgconfig" >> "${env:PKG_CONFIG_PATH}"
 
+      - name: Set environment variable on Windows
+        run: echo 'PKG_CONFIG_PATH="D:\gstreamer\1.0\mingw_x86-64\lib\pkgconfig"' | Out-File -FilePath $env:GITHUB_ENV -Append      
+        
       - uses: Swatinem/rust-cache@v2
 
       - name: Run cargo check
