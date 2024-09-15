@@ -106,8 +106,8 @@ jobs:
 
       - name: Install dependencies
         # run: choco install protoc mpv pkgconfiglite gtk-runtime mpv.install 
-        run:  choco install protoc gstreamer-mingw gstreamer-mingw-devel mpvio pkgconfiglite gtk-runtime 
         run: |  
+          choco install protoc gstreamer-mingw gstreamer-mingw-devel mpvio pkgconfiglite gtk-runtime 
           echo "D:\gstreamer\1.0\mingw_x86-64\lib\pkgconfig" >> "${env:PKG_CONFIG_PATH}"
           echo  "${env:PKG_CONFIG_PATH}"
 
