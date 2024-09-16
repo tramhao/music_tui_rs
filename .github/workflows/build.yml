@@ -121,7 +121,7 @@ jobs:
         run: cargo test --all --features gst
 
       - name: Run cargo fmt
-        run: cargo fmt --all --features gst -- --check
+        run: cargo fmt --all -- --check
 
       - name: Run cargo clippy
-        run: cargo clippy --all --features gst -- -D warnings
+        run: cargo clippy --all -- -D warnings
