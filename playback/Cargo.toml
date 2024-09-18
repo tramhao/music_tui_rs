@@ -30,7 +30,7 @@ discord-rich-presence.workspace = true
 glib = { workspace = true, optional = true }
 gstreamer = { workspace = true, optional = true}
 lazy_static.workspace = true
-libmpv-sirno = { workspace = true, optional = true }
+libmpv2 = { workspace = true, optional = true }
 log.workspace = true # = "0.4"
 parking_lot.workspace = true
 pathdiff.workspace = true #  = { version = "0.2", features = ["camino"] }
@@ -61,7 +61,7 @@ features = [
 default = []
 # cover = []
 gst = ["dep:gstreamer", "dep:glib"]
-mpv = ["dep:libmpv-sirno"]
+mpv = ["dep:libmpv2"]
 rusty-soundtouch = ["dep:soundtouch"]
 all-backends = ["gst", "mpv"]
 

@@ -115,10 +115,10 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Run cargo check
-        run: cargo check --all --features gst
+        run: cargo check --all --features gst,mpv
 
       - name: Run cargo test
-        run: cargo test --all --features gst
+        run: cargo test --all --features gst,mpv
 
       - name: Run cargo fmt
         run: cargo fmt --all -- --check

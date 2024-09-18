@@ -65,10 +65,10 @@ post:
 install: release post
 
 win:
-	cargo build --all
+	cargo build --features all-backends --all
 
 winrelease:
-	cargo build --release --all
+	cargo build --features all-backends --release --all
 
 winpost:
 	powershell -noprofile -command "Write-Host $(install_to)"

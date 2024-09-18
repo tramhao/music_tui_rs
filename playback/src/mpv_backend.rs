@@ -25,11 +25,8 @@ use super::{PlayerCmd, PlayerProgress, PlayerTrait};
 use crate::{MediaInfo, Speed, Volume};
 use anyhow::Result;
 use async_trait::async_trait;
-use libmpv::Mpv;
-use libmpv::{
-    events::{Event, PropertyData},
-    Format,
-};
+use libmpv2::Mpv;
+use libmpv2::{events::*, Format};
 use parking_lot::Mutex;
 use std::cmp;
 use std::sync::mpsc::{self, Receiver, Sender};
@@ -100,7 +97,7 @@ impl MpvBackend {
         std::thread::Builder::new()
             .name("mpv event loop".into())
             .spawn(move || {
-                let mut ev_ctx = mpv.create_event_context();
+                let mut ev_ctx = EventContext::new(mpv.ctx);
                 ev_ctx
                     .disable_deprecated_events()
                     .expect("failed to disable deprecated events.");
@@ -220,16 +217,16 @@ impl MpvBackend {
                                 let mut absolute_secs = secs + time_pos_seek;
                                 absolute_secs = cmp::max(absolute_secs, 0);
                                 absolute_secs = cmp::min(absolute_secs, duration_seek - 5);
-                                mpv.pause().ok();
+                                mpv.set_property("pause", true).ok();
                                 mpv.command("seek", &[&format!("\"{absolute_secs}\""), "absolute"])
                                     .ok();
-                                mpv.unpause().ok();
+                                mpv.set_property("pause", false).ok();
                                 // message_tx
                                 //     .send(PlayerMsg::Progress(time_pos_seek, duration_seek))
                                 //     .ok();
                             }
                             PlayerInternalCmd::SeekAbsolute(position) => {
-                                mpv.pause().ok();
+                                mpv.set_property("pause", true).ok();
                                 while mpv
                                     .command("seek", &[&format_duration(position), "absolute"])
                                     .is_err()
@@ -237,7 +234,7 @@ impl MpvBackend {
                                     // This is because we need to wait until the file is fully loaded.
                                     std::thread::sleep(Duration::from_millis(100));
                                 }
-                                mpv.unpause().ok();
+                                mpv.set_property("pause", false).ok();
                                 // message_tx.send(PlayerMsg::Progress(secs, duration)).ok();
                             }
                             PlayerInternalCmd::Eos => {
