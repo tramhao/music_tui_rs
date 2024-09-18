@@ -26,7 +26,10 @@ use crate::{MediaInfo, Speed, Volume};
 use anyhow::Result;
 use async_trait::async_trait;
 use libmpv2::Mpv;
-use libmpv2::{events::*, Format};
+use libmpv2::{
+    events::{Event, EventContext, PropertyData},
+    Format,
+};
 use parking_lot::Mutex;
 use std::cmp;
 use std::sync::mpsc::{self, Receiver, Sender};
