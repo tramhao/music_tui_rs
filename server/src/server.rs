@@ -13,16 +13,16 @@ use parking_lot::Mutex;
 use termusiclib::config::v2::server::config_extra::ServerConfigVersionedDefaulted;
 use termusiclib::config::v2::server::ScanDepth;
 use termusiclib::config::ServerOverlay;
+use termusiclib::player::music_player_server::MusicPlayerServer;
+use termusiclib::player::{GetProgressResponse, PlayerProgress, PlayerTime};
 use termusiclib::track::MediaType;
 use termusiclib::{podcast, utils};
-use termusicplayback::player::music_player_server::MusicPlayerServer;
-use termusicplayback::player::{GetProgressResponse, PlayerTime};
 use termusicplayback::{
     Backend, BackendSelect, GeneralPlayer, PlayerCmd, PlayerCmdReciever, PlayerCmdSender,
-    PlayerProgress, PlayerTrait, SpeedSigned, Status, VolumeSigned,
+    PlayerTrait, SpeedSigned, Status, VolumeSigned,
 };
 use tokio::runtime::Handle;
-use tokio::sync::oneshot;
+use tokio::sync::{broadcast, oneshot};
 use tonic::transport::server::TcpIncoming;
 use tonic::transport::Server;
 
@@ -103,8 +103,10 @@ async fn actual_main() -> Result<()> {
 
     info!("Server starting...");
     let (cmd_tx, cmd_rx) = tokio::sync::mpsc::unbounded_channel();
+    let (stream_tx, _) = broadcast::channel(3);
 
-    let music_player_service: MusicPlayerService = MusicPlayerService::new(cmd_tx.clone());
+    let music_player_service: MusicPlayerService =
+        MusicPlayerService::new(cmd_tx.clone(), stream_tx.clone());
     let playerstats = music_player_service.player_stats.clone();
 
     let cmd_tx_ctrlc = cmd_tx.clone();
@@ -134,7 +136,14 @@ async fn actual_main() -> Result<()> {
         .name("main player loop".into())
         .spawn(move || {
             let _guard = tokio_handle.enter();
-            let res = player_loop(args.backend.into(), cmd_tx, cmd_rx, config, playerstats);
+            let res = player_loop(
+                args.backend.into(),
+                cmd_tx,
+                cmd_rx,
+                config,
+                playerstats,
+                stream_tx,
+            );
             let _ = player_handle_os_tx.send(res);
         })?;
 
@@ -164,8 +173,9 @@ fn player_loop(
     mut cmd_rx: PlayerCmdReciever,
     config: ServerOverlay,
     playerstats: Arc<Mutex<PlayerStats>>,
+    stream_tx: termusicplayback::StreamTX,
 ) -> Result<()> {
-    let mut player = GeneralPlayer::new_backend(backend, config, cmd_tx)?;
+    let mut player = GeneralPlayer::new_backend(backend, config, cmd_tx, stream_tx)?;
     while let Some(cmd) = cmd_rx.blocking_recv() {
         #[allow(unreachable_patterns)]
         match cmd {

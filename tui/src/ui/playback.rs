@@ -1,12 +1,13 @@
 use anyhow::Result;
-use termusicplayback::player::music_player_client::MusicPlayerClient;
-use termusicplayback::player::{
-    CycleLoopRequest, GetProgressRequest, GetProgressResponse, PlaySelectedRequest,
-    ReloadConfigRequest, ReloadPlaylistRequest, SeekBackwardRequest, SeekForwardRequest,
-    SkipNextRequest, SkipPreviousRequest, SpeedDownRequest, SpeedUpRequest, ToggleGaplessRequest,
-    TogglePauseRequest, VolumeDownRequest, VolumeUpRequest,
+use termusiclib::player::music_player_client::MusicPlayerClient;
+use termusiclib::player::{
+    CycleLoopRequest, EmptyReply, GetProgressRequest, GetProgressResponse, PlaySelectedRequest,
+    PlayerProgress, ReloadConfigRequest, ReloadPlaylistRequest, SeekBackwardRequest,
+    SeekForwardRequest, SkipNextRequest, SkipPreviousRequest, SpeedDownRequest, SpeedUpRequest,
+    ToggleGaplessRequest, TogglePauseRequest, VolumeDownRequest, VolumeUpRequest,
 };
-use termusicplayback::{PlayerProgress, Status};
+use termusicplayback::Status;
+use tokio_stream::{Stream, StreamExt as _};
 use tonic::transport::Channel;
 
 pub struct Playback {
@@ -124,6 +125,7 @@ impl Playback {
         info!("Got response from server: {:?}", response);
         Ok(())
     }
+
     pub async fn play_selected(&mut self) -> Result<()> {
         let request = tonic::Request::new(PlaySelectedRequest {});
         let response = self.client.play_selected(request).await?;
@@ -131,11 +133,22 @@ impl Playback {
         info!("Got response from server: {:?}", response);
         Ok(())
     }
+
     pub async fn skip_previous(&mut self) -> Result<()> {
         let request = tonic::Request::new(SkipPreviousRequest {});
         let response = self.client.skip_previous(request).await?;
         let response = response.into_inner();
         info!("Got response from server: {:?}", response);
         Ok(())
+    }
+
+    pub async fn subscribe_to_stream_updates(
+        &mut self,
+    ) -> Result<impl Stream<Item = Result<termusiclib::player::StreamUpdates>>> {
+        let request = tonic::Request::new(EmptyReply {});
+        let response = self.client.subscribe_server_updates(request).await?;
+        let response = response.into_inner().map(|res| res.map_err(Into::into));
+        info!("Got response from server: {:?}", response);
+        Ok(response)
     }
 }
